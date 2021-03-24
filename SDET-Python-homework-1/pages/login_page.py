@@ -15,6 +15,7 @@ class LoginPage (BasePage):
         password_input = self.browser.find_element(*LoginPageLocators.INPUT_PASSWORD)
         password_input.send_keys("Qwerty12345")
         password_input.send_keys(Keys.ENTER)
+        self.browser.set_page_load_timeout(15)
         URL = self.browser.current_url
         assert URL=="https://target.my.com/dashboard",f"{URL} не равен https://target.my.com/dashboard"
 
