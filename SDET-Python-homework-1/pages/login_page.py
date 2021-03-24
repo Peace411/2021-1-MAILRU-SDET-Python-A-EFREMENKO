@@ -1,7 +1,7 @@
 from .base_page import BasePage
-from .base_locators import LoginPageLocators
+from .locators import LoginPageLocators
 from selenium.webdriver.common.keys import Keys
-from .base_locators import LogoutPageLocators
+from .locators import LogoutPageLocators
 import  time
 
 
