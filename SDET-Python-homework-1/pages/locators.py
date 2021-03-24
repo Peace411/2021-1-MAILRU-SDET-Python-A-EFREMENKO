@@ -11,11 +11,16 @@ class LogoutPageLocators():
     RIGHT_BUTTON =(By.CSS_SELECTOR, '.right-module-rightWrap-3lL6mf')
     LOGOUT_BUTTON= (By.XPATH,"//a[@href='/logout']")
 
-    
+
 class EditProfilePageLocators():
     PROFILE_BUTTON= (By.CSS_SELECTOR, '.center-module-profile-BHql9z')
     FIO_INPUT=(By.CSS_SELECTOR, '.js-contacts-field-name .input__wrap>input')
     PHONE_NUBER=(By.CSS_SELECTOR, '.js-contacts-field-phone input')
     INPUT_EMAIL=(By.CSS_SELECTOR, ".js-additional-emails input")
     SUMBIT_BUTTON=(By.CSS_SELECTOR, ".button_submit")
-    f= (By.CSS_SELECTOR, ".js-group-form-success-bg")
+    SUCCESS_MESSAGE= (By.CSS_SELECTOR, ".js-group-form-success-bg")
+
+
+class ParamPageLocators():
+    AUDIENCES = ".center-module-segments-3y1hDo"
+    PRO = ".center-module-pro-3rBU0K"
