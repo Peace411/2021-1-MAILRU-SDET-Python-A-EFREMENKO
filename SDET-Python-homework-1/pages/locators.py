@@ -21,6 +21,9 @@ class EditProfilePageLocators():
     SUCCESS_MESSAGE= (By.CSS_SELECTOR, ".js-group-form-success-bg")
 
 
-class ParamPageLocators():
-    AUDIENCES = ".center-module-segments-3y1hDo"
-    PRO = ".center-module-pro-3rBU0K"
+class AudiencesPageLocators():
+    AUDIENCES_BUTTON = (By.XPATH,"//a[contains(@href, 'segments')]")
+
+
+class ProPageLocators():
+    PRO_BUTTON =(By.XPATH,"//a[contains(@href, 'pro')]")
