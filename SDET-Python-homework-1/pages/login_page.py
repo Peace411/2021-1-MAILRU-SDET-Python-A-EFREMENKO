@@ -7,6 +7,7 @@ import  time
 
 class LoginPage (BasePage):
     def click_to_login_button(self):
+        time.sleep(5)
         login_button = self.browser.find_element(*LoginPageLocators.LOGIN_LINK).click()
 
     def authorization(self):
