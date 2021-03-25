@@ -14,7 +14,7 @@ class ProfilePage (BasePage):
         fio_input = self.browser.find_element(*EditProfilePageLocators.FIO_INPUT)
         fio_input.clear()
         fio_input.send_keys("Ефременко Андрей Андреевич")
-        phone_number_input = self.browser.find_element(*EditProfilePageLocators.PHONE_NUBER)
+        phone_number_input = self.browser.find_element(*EditProfilePageLocators.PHONE_NUMBER)
         phone_number_input.clear()
         phone_number_input.send_keys("+78005553535")
         email_input = self.browser.find_element(*EditProfilePageLocators.INPUT_EMAIL)
