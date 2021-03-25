@@ -1,12 +1,13 @@
 from .base_page import BasePage
-from .base_locators import LoginPageLocators
+from .locators import LoginPageLocators
 from selenium.webdriver.common.keys import Keys
-from .base_locators import LogoutPageLocators
+from .locators import LogoutPageLocators
 import  time
 
 
 class LoginPage (BasePage):
     def click_to_login_button(self):
+        time.sleep(5)
         login_button = self.browser.find_element(*LoginPageLocators.LOGIN_LINK).click()
 
     def authorization(self):
@@ -15,6 +16,7 @@ class LoginPage (BasePage):
         password_input = self.browser.find_element(*LoginPageLocators.INPUT_PASSWORD)
         password_input.send_keys("Qwerty12345")
         password_input.send_keys(Keys.ENTER)
+        self.browser.set_page_load_timeout(15)
         URL = self.browser.current_url
         assert URL=="https://target.my.com/dashboard",f"{URL} не равен https://target.my.com/dashboard"
 
