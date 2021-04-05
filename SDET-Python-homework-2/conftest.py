@@ -1,6 +1,7 @@
 import os
 import logging
 import shutil
+from webdriver_manager.chrome import ChromeDriverManager
 
 import allure
 import pytest
@@ -20,8 +21,8 @@ def config(request):
 @pytest.fixture(scope="function")
 def browser():
     print("\nstart browser for test..")
-
-    browser = webdriver.Chrome()
+    manager = ChromeDriverManager(version='latest')
+    browser = webdriver.Chrome(executable_path=manager.install())
     browser.set_window_size(1024, 600)
     browser.maximize_window()
 
@@ -63,6 +64,7 @@ def logger(test_dir, config):
     log = logging.getLogger('test')
     log.propagate = False
     log.setLevel(log_level)
+    log.handlers.clear()
     log.addHandler(file_handler)
 
     yield log
