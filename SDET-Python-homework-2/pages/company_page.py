@@ -35,12 +35,12 @@ class CompanyPage(BasePage):
         input_title.send_keys("Загаловок")
         input_screenshot = self.find(*CompanyPageLocators.INPUT_PHOTO)
         input_screenshot.send_keys(file1)
-        button_submit = self.click(*CompanyPageLocators.BUTTON_SUBMIT)
+        self.click(*CompanyPageLocators.BUTTON_SUBMIT)
         input_video = self.find(*CompanyPageLocators.VIDEO_INPUT)
         input_video.send_keys(file2)
         input_text = self.find(*CompanyPageLocators.INPUT_TEXT)
         input_text.send_keys("Текст")
-        button_save = self.click(*CompanyPageLocators.SAVE_COMPANY)
+        self.click(*CompanyPageLocators.SAVE_COMPANY)
         name_in_grid = self.find(*CompanyPageLocators.NAME_IN_GRID)
         assert "test" == name_in_grid.text
 

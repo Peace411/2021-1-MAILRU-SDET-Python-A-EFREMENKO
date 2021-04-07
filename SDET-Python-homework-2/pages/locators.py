@@ -57,4 +57,4 @@ class AudiencesPageLocators():
     CREATE_SEGMENT_BUTTON =(By.XPATH,"//button [@class= 'button button_submit']")
     NAME_IN_GRID = (By.XPATH,"//a [string() = 'test']")
     DElETE_AUDIENCE =(By.XPATH , "//div[@class='ReactVirtualized__Grid']//a[text() = 'test']//../..//following-sibling::div//span")
-    ACCEPT_BUTTOn = (By.XPATH,"//div [text()= 'Удалить']")
+    ACCEPT_BUTTON = (By.XPATH,"//div [text()= 'Удалить']")

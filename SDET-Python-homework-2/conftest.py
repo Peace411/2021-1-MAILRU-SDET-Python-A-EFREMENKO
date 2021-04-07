@@ -7,6 +7,9 @@ import allure
 import pytest
 from selenium import webdriver
 
+from pages.login_page import LoginPage
+from pages.main_page import MainPage
+
 
 def pytest_addoption(parser):
     parser.addoption('--debug_log', action='store_true')
@@ -29,6 +32,13 @@ def browser():
     yield browser
     print("\nquit browser..")
     browser.quit()
+
+@pytest.fixture
+def authorization(browser):
+    page = LoginPage(browser)
+    page.open()
+    page.authorization()
+    return MainPage(browser)
 
 
 def pytest_configure(config):
