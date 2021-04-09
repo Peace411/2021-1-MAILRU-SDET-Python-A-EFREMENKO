@@ -16,13 +16,9 @@ def test_create_audiences(authorization):
     page.delete_audiences()
 
 @pytest.mark.ui
-def test_invalid_password(browser):
+@pytest.mark.parametrize('email,password', [('a.efremenko2014@yandex.ru', '123'), ('a232@yandex.ru', 'Qwerty12345')])
+def test_invalid_credentials(browser, email, password):
     page = LoginPage(browser)
     page.open()
-    page.invalid_password_autrization()
+    page.invalid_autrization(email, password)
 
-@pytest.mark.ui
-def test_invalid_login(browser):
-    page = LoginPage(browser)
-    page.open()
-    page.invalid_login_autrization()

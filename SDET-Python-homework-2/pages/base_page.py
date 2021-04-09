@@ -3,10 +3,8 @@ import time
 
 import allure
 from selenium.common.exceptions import StaleElementReferenceException, NoSuchElementException, TimeoutException
-from selenium.webdriver import ActionChains
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
-
 
 CLICK_RETRY = 3
 BASE_TIMEOUT = 15
@@ -24,8 +22,8 @@ class BasePage():
     def open(self):
         self.browser.get(self.url)
 
-    def find(self, how,what, timeout=None):
-        return self.wait(timeout).until(EC.presence_of_element_located((how,what)))
+    def find(self, how, what, timeout=None):
+        return self.wait(timeout).until(EC.presence_of_element_located((how, what)))
 
     def wait(self, timeout=None):
         if timeout is None:
@@ -36,21 +34,22 @@ class BasePage():
         self.browser.execute_script('arguments[0].scrollIntoView(true);', element)
 
     @allure.step('Clicking {what}')
-    def click(self, how ,what, timeout=None):
+    def click(self, how, what, timeout=None):
         for i in range(CLICK_RETRY):
             logger.info(f'Clicking on {what}. Try {i + 1} of {CLICK_RETRY}...')
             try:
                 element = self.find(how, what, timeout=timeout)
                 self.scroll_to(element)
-                element = self.wait(timeout).until(EC.element_to_be_clickable((how,what)))
+                element = self.wait(timeout).until(EC.element_to_be_clickable((how, what)))
                 element.click()
                 return
             except StaleElementReferenceException:
                 if i == CLICK_RETRY - 1:
                     raise
-    def check_element_is_delete(self,how,what):
+
+    def check_element_is_delete(self, how, what):
         try:
-            self.find(how,what,5)
+            self.find(how, what, 5)
         except(TimeoutException):
             return True
         else:

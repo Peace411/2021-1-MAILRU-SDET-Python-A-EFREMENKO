@@ -14,12 +14,10 @@ from pages.main_page import MainPage
 def pytest_addoption(parser):
     parser.addoption('--debug_log', action='store_true')
 
-
 @pytest.fixture(scope='session')
 def config(request):
     debug_log = request.config.getoption('--debug_log')
     return {'debug_log': debug_log}
-
 
 @pytest.fixture(scope="function")
 def browser():

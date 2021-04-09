@@ -16,12 +16,9 @@ class LoginPage (BasePage):
         password_input.send_keys(Keys.ENTER)
 
 
-    def invalid_password_autrization(self):
-        self.authorization('a.efremenko2014@yandex.ru' , 'fdsfs')
+    def invalid_autrization(self,invalid_email,invalid_password):
+        self.authorization(invalid_email , invalid_password)
         error_message  = self.find(*LoginPageLocators.EROR_MESSAGE)
         assert error_message.text == "Invalid login or password"
 
-    def invalid_login_autrization(self):
-        self.authorization('afdsfsdfsd@yandex.ru','Qwerty12345')
-        error_message = self.find(*LoginPageLocators.EROR_MESSAGE)
-        assert error_message.text == "Invalid login or password"
+
