@@ -54,3 +54,8 @@ class BasePage():
             return True
         else:
             return False
+
+    def check_name_locator(self, locator, name):
+        name_locator = (locator[0],
+                        locator[1].format(name))
+        return name_locator

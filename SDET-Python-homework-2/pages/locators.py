@@ -24,7 +24,7 @@ class CompanyPageLocators():
     VIDEO_INPUT = (By.XPATH, "//input [@accept='.mp4']")
     INPUT_TEXT = (By.XPATH, "//textarea[@placeholder ='Введите текст объявления']")
     SAVE_COMPANY = (By.XPATH, "//div/button[string()= 'Создать кампанию']")
-    NAME_IN_GRID = (By.XPATH, f"//a[text()= '{NAME_COPMANY}']")
+    NAME_IN_GRID = (By.XPATH, "//a[text()= '{}']")
     CHECKBOX = (By.XPATH, "//input [@type='checkbox' ]")
     DROP_BOX = (By.XPATH, "//span[text() = 'Действия' ]")
     DELETE_BUTTON = (By.XPATH, "//li[text() = 'Удалить' ]")
@@ -37,8 +37,6 @@ class AudiencesPageLocators():
     SUBMIT_BUTTON = (By.XPATH, "//div[text()  = 'Добавить сегмент']")
     NAME_SEGMENT_INPUT = (By.CSS_SELECTOR, ".input_create-segment-form input")
     CREATE_SEGMENT_BUTTON = (By.XPATH, "//button [@class= 'button button_submit']")
-    NAME_IN_GRID = (By.XPATH, f"//a [string() = '{NAME_AUDIENCES}']")
-    DElETE_AUDIENCE = (
-    By.XPATH, f"//a[text() = '{NAME_AUDIENCES}']//../..//following-sibling::div"
-              f"//span")
+    NAME_IN_GRID = (By.XPATH, "//a [string() = '{}']")
+    DElETE_AUDIENCE = (By.XPATH, "//a[text() = '{}']//../..//following-sibling::div//span")
     ACCEPT_BUTTON = (By.XPATH, "//div [text()= 'Удалить']")

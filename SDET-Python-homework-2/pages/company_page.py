@@ -28,13 +28,13 @@ class CompanyPage(BasePage):
                               create a company, check that the company is created
                               """
                  )
-    def create_company(self):
-        self.data_entry()
+    def create_company(self,name):
+        self.data_entry(name)
         self.click(*CompanyPageLocators.SAVE_COMPANY)
         time.sleep(5)
-        name_in_grid = self.find(*CompanyPageLocators.NAME_IN_GRID)
-
-        assert name_company == name_in_grid.text
+        name_locator = self.check_name_locator(CompanyPageLocators.NAME_IN_GRID, name)
+        name_in_grid = self.find(*name_locator)
+        assert name == name_in_grid.text
 
     @allure.step("""
                                  click on checkbox,
@@ -47,11 +47,11 @@ class CompanyPage(BasePage):
         self.click(*CompanyPageLocators.DROP_BOX)
         self.click(*CompanyPageLocators.DELETE_BUTTON)
 
-    def data_entry(self):
+    def data_entry(self,name):
         link = self.find(*CompanyPageLocators.ADD_LINK).send_keys("mail.ru")
         input_name = self.find(*CompanyPageLocators.NAME_INPUT)
         input_name.clear()
-        input_name.send_keys(name_company)
+        input_name.send_keys(name)
         input_title = self.find(*CompanyPageLocators.INPUT_TITLE).send_keys("Загаловок")
         self.find(*CompanyPageLocators.INPUT_PHOTO).send_keys(file1)
         self.click(*CompanyPageLocators.BUTTON_SUBMIT)
