@@ -1,7 +1,10 @@
-import logging
-from typing import Any
 import json
+import logging
+import os
+from typing import Any
+
 import requests
+from faker import Faker
 
 logger = logging.getLogger('test')
 
@@ -23,12 +26,10 @@ class InvalidLoginException(Exception):
 class ApiClient:
 
     def __init__(self, base_url):
-        self.id_company = None
         self.base_url = base_url
         self.session = requests.Session()
 
         self.csrf_token = None
-        self.id_segment = None
 
     @staticmethod
     def log_pre(method, url, headers, data, expected_status):
@@ -84,20 +85,10 @@ class ApiClient:
 
     def post_login(self, user, password):
         location = 'https://auth-ac.my.com/auth?lang=ru&nosavelogin=0'
-        self._request('GET', location, expected_status=302)
 
         headers = {
-            'Host': 'auth-ac.my.com',
-            'Origin': 'https://target.my.com',
-            'Connection': 'keep-alive',
             'Referer': 'https://target.my.com/',
-            'Upgrade-Insecure-Requests': '1',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
             'Content-Type': 'application/x-www-form-urlencoded',
-            'sec-ch-ua': 'Google Chrome";v="89", "Chromium";v="89", ";Not A Brand";v="99',
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
-                          'Chrome/89.0.4389.114 Safari/537.36 '
-
         }
 
         data = {
@@ -108,33 +99,50 @@ class ApiClient:
 
         }
 
-        result = self._request('POST', location, headers=headers, expected_status=302, data=data, allow_redirects=False,
+        result = self._request('POST', location, headers=headers, expected_status=200, data=data, allow_redirects=True,
                                jsonify=False)
-        self._request('GET', 'https://target.my.com/auth/mycom?state=target_login=1&ignore_opener=1',
-                      expected_status=302)
-        location = 'https://auth-ac.my.com/sdc?from=https://target.my.com/auth/mycom?state=target_login%3D1' \
-                   '%26ignore_opener%3D1 '
-        location = self._request('GET', location=location, expected_status=302).headers['location']
-
-        self._request('GET', location, expected_status=302)
-        self._request('GET', 'https://target.my.com/auth/mycom?state=target_login%3D1%26ignore_opener%3D1')
-        self._request('GET', 'https://target.my.com/', expected_status=302)
-        self._request('GET', 'https://target.my.com/dashboard')
-
         self.get_token()
         return result
 
-    def delete_segment(self, id_segment=None):
-        if id_segment is None:
-            id_segment = self.id_segment
-
+    def delete_segment(self):
+        id_segment = self.create_segment()
         location = f'https://target.my.com/api/v2/remarketing/segments/{id_segment}.json'
         headers: dict[str, Any] = {
             'X-CSRFToken': self.csrf_token
         }
         self._request('DELETE', location=location, headers=headers, expected_status=204)
 
+    def upload_files(self):
+        image = os.path.abspath(os.path.join(os.path.dirname(__file__), 'stuff/381D0F.jpg'))
+        im = open(image, 'rb')
+        video = os.path.abspath(os.path.join(os.path.dirname(__file__), 'stuff/51740A.mp4'))
+        video_heders = {
+            'X-CSRFToken': self.csrf_token
+        }
+        video_data = {
+            'height': '720',
+            'width': '1280',
+        }
+        files_video = {'file': open(video, 'rb')}
+        image_headers = {
+            'X-CSRFToken': self.csrf_token
+        }
+        files = {'file': im}
+        image_data = {
+            'height': '256',
+            'width': '256',
+        }
+
+        location = 'https://target.my.com/api/v2/content/static.json'
+        image = self.session.post(location, headers=image_headers, data=image_data, files=files)
+        location = 'https://target.my.com/api/v2/content/video.json'
+        video = self.session.post(location, headers=video_heders, data=video_data, files=files_video)
+        id_video = video.json()['id']
+        id_image = image.json()['id']
+        return id_image, id_video
+
     def create_segment(self):
+        fake = Faker()
         location = 'https://target.my.com/api/v2/remarketing/segments.json'
 
         headers = {
@@ -143,10 +151,9 @@ class ApiClient:
             'Accept': 'application/json, text/javascript, */*; q=0.01'
 
         }
-
         params = {
             "logicType": "or",
-            "name": "test",
+            "name": fake.lexify(text='?? ?? ??? ??????'),
             "pass_condition": 1,
             "relations": [
                 {
@@ -161,23 +168,86 @@ class ApiClient:
         }
         res = self._request('POST', location, headers=headers, data=json.dumps(params))
         id_segment = res.json()['id']
-        self.id_segment = id_segment
+        return id_segment
 
     def create_company(self):
+        fake = Faker()
+        id_stuff = self.upload_files()
         location = 'https://target.my.com/api/v2/campaigns.json'
-        headrs = {
+        headers = {
             'X-CSRFToken': self.csrf_token,
             'Content-Type': 'application/json'
 
         }
-        res = self._request('POST', location=location, headers=headrs, data=json.dumps(params_company))
+        params_company = {
+            "audit_pixels": [],
+            "autobidding_mode": "fixed",
+            "banners": [
+                {
+                    "content": {
+                        "icon_256x256": {
+                            "id": id_stuff[0]
+                        },
+                        "video_landscape_30s": {
+                            "id": id_stuff[1]
+                        }
+                    },
+                    "name": fake.lexify(text='?? ?? ??? ??????'),
+                    "textblocks": {
+                        "cta_sites_full": {
+                            "text": "visitSite"
+                        },
+                        "text_40": {
+                            "text": fake.lexify(text='?? ?? ??? ??????')
+                        },
+                        "title_25": {
+                            "text": fake.lexify(text='?? ?? ??? ??????')
+                        }
+                    },
+                    "urls": {
+                        "primary": {
+                            "id": 1852176
+                        }
+                    }
+                }
+            ],
+            "enable_utm": True,
+            "max_price": "0",
+            "mixing": "fastest",
+            "name": fake.lexify(text='?? ?? ??? ??????'),
+            "objective": "general_ttm",
+            "package_id": 560,
+            "price": "1",
+            "targetings": {
+                "age": {
+                    "age_list": [
+                        0, 12
+                    ],
+                    "expand": True
+                },
+                "fulltime": {
+                    "flags": [
+                        "use_holidays_moving",
+                        "cross_timezone"
+                    ],
+                    "fri": [
+                        0, 1, 2, 3, 4, 5, 6, 7, 8, 9
+                    ]
+
+                },
+                "split_audience": [
+                    1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+                ]
+            }
+        }
+        res = self._request('POST', location=location, headers=headers, data=json.dumps(params_company))
         id_company = res.json()['id']
-        self.id_company = id_company
+        self.delete_company(id_company=id_company)
+        return id_company
 
     def delete_company(self, id_company=None):
         location = 'https://target.my.com/api/v2/campaigns/mass_action.json'
-        if id_company is None:
-            id_company = self.id_company
+
         headers = {
             'X-CSRFToken': self.csrf_token,
             'Content-Type': 'application/json'
@@ -189,83 +259,3 @@ class ApiClient:
             }
         ]
         self._request('POST', location=location, headers=headers, data=json.dumps(params), expected_status=204)
-
-
-params_company = {
-    "audit_pixels": [],
-    "autobidding_mode": "fixed",
-    "banners": [
-        {
-            "content": {
-                "icon_256x256": {
-                    "id": 8640939
-                },
-                "video_landscape_30s": {
-                    "id": 8643100
-                }
-            },
-            "name": "",
-            "textblocks": {
-                "cta_sites_full": {
-                    "text": "visitSite"
-                },
-                "text_40": {
-                    "text": "HI"
-                },
-                "title_25": {
-                    "text": "HI"
-                }
-            },
-            "urls": {
-                "primary": {
-                    "id": 1852176
-                }
-            }
-        }
-    ],
-    "enable_utm": True,
-    "max_price": "0",
-    "mixing": "fastest",
-    "name": "Новая кампания 16.04.2021 17:18:02",
-    "objective": "general_ttm",
-    "package_id": 560,
-    "price": "1",
-    "targetings": {
-        "age": {
-            "age_list": [
-                0, 12
-            ],
-            "expand": True
-        },
-        "fulltime": {
-            "flags": [
-                "use_holidays_moving",
-                "cross_timezone"
-            ],
-            "fri": [
-                0, 1, 2, 3, 4, 5, 6, 7, 8, 9
-            ]
-
-        },
-        "geo": {
-            "regions": [
-                188
-            ]
-        },
-        "interests": [],
-        "interests_soc_dem": [],
-        "pads": [
-            39269,
-            39270
-        ],
-        "segments": [],
-        "sex": [
-            "male",
-            "female"
-        ],
-        "split_audience": [
-            1, 2, 3, 4, 5, 6, 7, 8, 9, 10
-        ]
-    },
-    "uniq_shows_period": "day",
-}
