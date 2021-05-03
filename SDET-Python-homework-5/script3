@@ -1,1 +1,2 @@
-cat access.log|awk '{ print "url- " $7}'|sort | uniq -c | sort -n | tail -n 10 > res3
+cat access.log|awk '{ print "url- " $7}'|sort | uniq -c | sort -n | tail -n 10|sort -nr > res3
+

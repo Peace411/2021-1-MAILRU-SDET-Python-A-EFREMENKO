@@ -1,1 +1,1 @@
-cat access.log|awk '{print $6}'|grep -EIho 'POST|GET|PUT|HEAD' *|sort|uniq -c > res2
+cat access.log|awk '{print $6}'|sort|uniq -c |sort -rn > res2
