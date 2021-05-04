@@ -1,0 +1,2 @@
+cat access.log | awk '$9 ~ /^4[0-9][0-9]/ {print $0}'| sort -k10n | tail -n5 |sort -k10nr| awk '{ print $7,$9,$10,$1}' | column -t >res4
+
