@@ -1,11 +1,15 @@
 import os
 import logging
 import shutil
-
+from pages.base_page import BasePage
+from pages.main_page import MainPage
+from pages.sources_news_page import SourcesNews
+from pages.about_app_page import AboutPage
+from pages.setting_page import SettingPage
 import allure
 import pytest
 from appium import webdriver
-
+from fixtures import *
 from capability import capability_select
 
 
@@ -22,15 +26,15 @@ def config(request):
 
 
 @pytest.fixture(scope="function")
-def browser(config):
+def driver(config):
     print("\nstart browser for test..")
     appium_url = config['appium']
     desired_caps = capability_select(download_dir=test_dir)
-    browser = webdriver.Remote(appium_url, desired_capabilities=desired_caps)
+    driver = webdriver.Remote(appium_url, desired_capabilities=desired_caps)
 
-    yield browser
+    yield driver
     print("\nquit browser..")
-    browser.quit()
+    driver.quit()
 
 
 def pytest_configure(config):

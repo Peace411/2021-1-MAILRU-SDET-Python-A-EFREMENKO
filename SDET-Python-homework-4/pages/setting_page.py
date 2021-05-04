@@ -13,9 +13,9 @@ class SettingPage(BasePage):
     def go_to_source_news(self):
         self.swipe_to_element(SettingPageLocators.SOURCES_NEWS, 2)
         self.click(*SettingPageLocators.SOURCES_NEWS)
-        return SourcesNews(browser=self.browser)
+        return SourcesNews(driver=self.driver)
 
     def go_to_about_app(self):
         self.swipe_to_element(SettingPageLocators.ABOUT_THE_APP, 2)
         self.click(*SettingPageLocators.ABOUT_THE_APP)
-        return AboutPage(browser=self.browser)
+        return AboutPage(driver=self.driver)

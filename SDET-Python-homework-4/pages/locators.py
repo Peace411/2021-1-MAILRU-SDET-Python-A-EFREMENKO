@@ -11,6 +11,7 @@ class MainPageLocators():
     CARD_TITLE = (By.ID, 'ru.mail.search.electroscope:id/item_dialog_fact_card_title')
     BURGER_MENU = (By.ID, 'ru.mail.search.electroscope:id/assistant_menu_bottom')
     NEWS_NAME = (By.ID, 'ru.mail.search.electroscope:id/player_track_name')
+    COMMAND_LINE= (By.XPATH,'//androidx.recyclerview.widget.RecyclerView/android.view.ViewGroup')
 
 
 class SettingPageLocators():

@@ -13,7 +13,7 @@ class MainPage(BasePage):
         input1 = self.find(*MainPageLocators.INPUT)
         input1.send_keys(text)
         self.click(*MainPageLocators.SEND_BUTTON)
-        self.browser.hide_keyboard()
+        self.driver.hide_keyboard()
 
     def check_title(self, expected_text):
         text = self.find(*MainPageLocators.NAME_COUNTRY)
@@ -34,6 +34,7 @@ class MainPage(BasePage):
     def search_command(self, text_command, expected_text):
         command = (MainPageLocators.TEXT_VIEW[0],
                    MainPageLocators.TEXT_VIEW[1].format(text_command))
+        self.swipe_element_lo_left(*MainPageLocators.COMMAND_LINE)
         self.click(*command)
         time.sleep(5)
         card_title = self.find(*MainPageLocators.CARD_TITLE)
@@ -41,4 +42,4 @@ class MainPage(BasePage):
 
     def go_to_setting(self):
         self.click(*MainPageLocators.BURGER_MENU)
-        return SettingPage(browser=self.browser)
+        return SettingPage(driver=self.driver)

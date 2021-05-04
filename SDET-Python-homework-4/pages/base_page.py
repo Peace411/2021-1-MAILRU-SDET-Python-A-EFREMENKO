@@ -11,12 +11,12 @@ BASE_TIMEOUT = 15
 logger = logging.getLogger('test')
 
 
-class BasePage():
+class BasePage(object):
 
-    def __init__(self, browser, timeout=15):
-        self.browser = browser
+    def __init__(self, driver, timeout=15):
+        self.driver = driver
         logger.info(f'{self.__class__.__name__} page is opening...')
-        self.browser.implicitly_wait(timeout)
+        self.driver.implicitly_wait(timeout)
 
     def find(self, how, what, timeout=None):
         return self.wait(timeout).until(EC.presence_of_element_located((how, what)))
@@ -24,10 +24,7 @@ class BasePage():
     def wait(self, timeout=None):
         if timeout is None:
             timeout = 5
-        return WebDriverWait(self.browser, timeout=timeout)
-
-    def scroll_to(self, element):
-        self.browser.execute_script('arguments[0].scrollIntoView(true);', element)
+        return WebDriverWait(self.driver, timeout=timeout)
 
     @allure.step('Clicking {what}')
     def click(self, how, what, timeout=None):
@@ -52,8 +49,8 @@ class BasePage():
         4. TouchAction нажимает на указанные стартовые координаты, немного ждет и передвигает нас из одной точки в другую.
         5. release() наши пальцы с экрана, а perform() выполняет всю эту цепочку команд.
         """
-        action = TouchAction(self.browser)
-        dimension = self.browser.get_window_size()
+        action = TouchAction(self.driver)
+        dimension = self.driver.get_window_size()
         x = int(dimension['width'] / 2)
         start_y = int(dimension['height'] * 0.8)
         end_y = int(dimension['height'] * 0.2)
@@ -66,7 +63,7 @@ class BasePage():
 
     def swipe_to_element(self, locator, max_swipes):
         already_swiped = 0
-        while len(self.browser.find_elements(*locator)) == 0:
+        while len(self.driver.find_elements(*locator)) == 0:
             if already_swiped > max_swipes:
                 raise TimeoutException(f"Error with {locator}, please check function")
             self.swipe_up()
@@ -74,6 +71,7 @@ class BasePage():
 
     def swipe_element_lo_left(self, how, what):
         """
+        :param how:
         :param locator: локатор, который мы ищем
         1. Находим наш элемент на экране
         2. Получаем его координаты (начала, конца по ширине и высоте)
@@ -86,7 +84,7 @@ class BasePage():
         upper_y = web_element.location['y']
         lower_y = upper_y + web_element.rect['height']
         middle_y = (upper_y + lower_y) / 2
-        action = TouchAction(self.browser)
+        action = TouchAction(self.driver)
         action. \
             press(x=right_x, y=middle_y). \
             wait(ms=300). \
