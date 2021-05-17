@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Date, ForeignKey
+from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
@@ -13,12 +13,14 @@ class Top4xx(Base):
                f"id='{self.id}'," \
                f"url='{self.url}', " \
                f"statuscode='{self.statuscode}', " \
+               f"requestsize='{self.requestsize}', " \
                f"ipadress='{self.ipadress}'" \
                f")>"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     url = Column(String(500), nullable=False)
     statuscode = Column(String(50), nullable=False)
+    requestsize = Column(Integer, nullable=False)
     ipadress = Column(String(50), nullable=False)
 
 
@@ -37,6 +39,7 @@ class Top5xx(Base):
     ipadress = Column(String(100), nullable=False)
     reqestsize = Column(Integer, nullable=False)
 
+
 class Top10Urls(Base):
     __tablename__ = 'top10urls'
     __table_args__ = {'mysql_charset': 'utf8'}
@@ -51,6 +54,8 @@ class Top10Urls(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     url = Column(String(200), nullable=False)
     count = Column(Integer, nullable=False)
+
+
 class MethodCounts(Base):
     __tablename__ = 'methodcounts'
     __table_args__ = {'mysql_charset': 'utf8'}
@@ -66,6 +71,8 @@ class MethodCounts(Base):
     method = Column(String(200), nullable=False)
 
     count = Column(Integer, nullable=False)
+
+
 class NumberOfRequests(Base):
     __tablename__ = 'number_of_requests'
     __table_args__ = {'mysql_charset': 'utf8'}

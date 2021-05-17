@@ -10,19 +10,11 @@ class MySQLBuilder:
     def __init__(self, client):
         self.client = client
 
-    def create_top4xx(self, url=None, statuscode=None, ipadress=None):
-        if url is None:
-            url = fake.text()
-
-        if statuscode is None:
-            statuscode = fake.text()
-
-        if ipadress is None:
-            ipadress = fake.text()
-
+    def create_top4xx(self, url=None, statuscode=None, requestsize=None, ipadress=None):
         top4xx = Top4xx(
             url=url,
             statuscode=statuscode,
+            requestsize=requestsize,
             ipadress=ipadress
         )
         self.client.session.add(top4xx)
@@ -31,10 +23,6 @@ class MySQLBuilder:
 
     def create_top5xx(self, ipadress=None, requestsize=None):
 
-        if ipadress is None:
-            ipadress = fake.text()
-        if requestsize is None:
-            requestsize = fake.number()
         top5xx = Top5xx(
             ipadress=ipadress,
             reqestsize=requestsize
@@ -44,11 +32,6 @@ class MySQLBuilder:
         return top5xx
 
     def create_top10urls(self, url=None, count=None):
-
-        if url is None:
-            url = fake.text()
-        if count is None:
-            count = fake.number()
         top10url = Top10Urls(
             url=url,
             count=count
@@ -58,11 +41,6 @@ class MySQLBuilder:
         return top10url
 
     def create_method_counts(self, method=None, count=None):
-
-        if method is None:
-            method = fake.text()
-        if count is None:
-            count = fake.number()
         method_counts = MethodCounts(
             method=method,
             count=count
@@ -72,8 +50,6 @@ class MySQLBuilder:
         return method_counts
 
     def create_number_of_requests(self, count=None):
-        if count is None:
-            count = fake.number()
         number_of_requests = NumberOfRequests(count=count)
         self.client.session.add(number_of_requests)
         self.client.session.commit()

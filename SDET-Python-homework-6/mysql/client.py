@@ -60,6 +60,7 @@ class MysqlClient:
 
         if not inspect(self.engine).has_table('methodcounts'):
             Base.metadata.tables['methodcounts'].create(self.engine)
+
     def create_number_of_requests(self):
         if not inspect(self.engine).has_table('number_of_requests'):
             Base.metadata.tables['number_of_requests'].create(self.engine)
