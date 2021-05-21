@@ -1,11 +1,14 @@
+import os
 from collections import defaultdict
 from operator import itemgetter
 import re
 
+repo_root = os.path.abspath(os.path.join(__file__, os.pardir))
+
 
 def read_access():
     result = []
-    with open('../access.log') as f:
+    with open(repo_root + '/access.log') as f:
         res = f.read().splitlines()
     for i in res:
         result.append(i.split(' '))
@@ -54,7 +57,7 @@ def get_method():
     count_post = 0
     count_put = 0
     count_head = 0
-    for line in open('../access.log', 'r'):
+    for line in open(repo_root + '/access.log', 'r'):
         if 'POST' in line:
             count_post += 1
         if 'GET' in line:
@@ -68,5 +71,5 @@ def get_method():
 
 
 def get_count():
-    data = sum(1 for line in open('../access.log', 'r'))
+    data = sum(1 for line in open(repo_root + '/access.log', 'r'))
     return data

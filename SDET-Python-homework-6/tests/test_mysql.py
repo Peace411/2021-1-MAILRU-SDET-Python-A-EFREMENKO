@@ -25,7 +25,6 @@ class TestTop4xx(MySQLBase):
         for item in data:
             self.top4xx = self.mysql_builder.create_top4xx(url=item[0], statuscode=item[1], requestsize=item[2],
                                                            ipadress=item[3])
-
     def get_top4xx(self):
         top4xx = self.mysql.session.query(Top4xx).all()
         print(top4xx)
@@ -33,7 +32,8 @@ class TestTop4xx(MySQLBase):
 
     def test_top4xx(self):
         top4xx = self.get_top4xx()
-        assert len(top4xx) == 5
+        data = scripts.get_res4xx()
+        assert len(top4xx) == len(data)
 
 
 class TestTop5xx(MySQLBase):
@@ -50,7 +50,8 @@ class TestTop5xx(MySQLBase):
 
     def test_top5xx(self):
         top5xx = self.get_top5xx()
-        assert len(top5xx) == 5
+        data = scripts.get_res5xx()
+        assert len(top5xx) == len(data)
 
 
 class TestTop10Urls(MySQLBase):
@@ -66,7 +67,8 @@ class TestTop10Urls(MySQLBase):
 
     def test_top10urls(self):
         top10 = self.get_top10urls()
-        assert len(top10) == 10
+        data = scripts.get_url()
+        assert len(top10) == len(data)
 
 
 class TestMethodCounts(MySQLBase):
@@ -82,8 +84,8 @@ class TestMethodCounts(MySQLBase):
 
     def test_methods_count(self):
         count = self.get_res()
-
-        assert len(count) == 4
+        data = scripts.get_method()
+        assert len(count) == len(data)
         print(count)
 
 
@@ -98,5 +100,6 @@ class TestNumberOfRRequests(MySQLBase):
         return count
 
     def test_number_of_requests(self):
-        data = self.get_count()
-        assert len(data) == 1
+        resp = self.get_count()
+        data=[scripts.get_count()]
+        assert len(resp) == len(data)
