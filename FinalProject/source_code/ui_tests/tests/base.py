@@ -4,6 +4,7 @@ from _pytest.fixtures import FixtureRequest
 from ui_tests.pages.base_page import BasePage
 from ui_tests.pages.login_page import LoginPage
 from ui_tests.pages.main_page import MainPage
+from ui_tests.pages.registration_page import RegistrationPage
 
 
 class BaseCase:
@@ -16,3 +17,4 @@ class BaseCase:
         self.base_page: BasePage = request.getfixturevalue('base_page')
         self.main_page: MainPage = request.getfixturevalue('main_page')
         self.login_page: LoginPage = request.getfixturevalue('login_page')
+        self.registr_page: RegistrationPage = request.getfixturevalue('registration_page')

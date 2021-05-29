@@ -1,5 +1,8 @@
+import logging
+import socket
 import time
 
+import allure
 from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver import ActionChains
 from selenium.webdriver.support import expected_conditions as EC
@@ -11,18 +14,19 @@ from ui_tests.utils.decorators import wait
 CLICK_RETRY = 3
 BASE_TIMEOUT = 5
 
+logger = logging.getLogger('test')
+
 
 class PageNotLoadedException(Exception):
     pass
 
 
 class BasePage(object):
-    url = '0.0.0.0:8080'
+    url = f'{socket.gethostbyname("app")}:8080'
     locators = BasePageLocators()
 
     def __init__(self, driver):
         self.driver = driver
-        assert self.is_opened()
 
     def is_opened(self):
         def _check_url():
@@ -34,6 +38,7 @@ class BasePage(object):
 
         return wait(_check_url, error=PageNotLoadedException, check=True, timeout=BASE_TIMEOUT, interval=0.1)
 
+    @allure.step('find {locator}')
     def find(self, locator, timeout=None):
         return self.wait(timeout).until(EC.presence_of_element_located(locator))
 
@@ -43,7 +48,7 @@ class BasePage(object):
 
     def wait(self, timeout=None):
         if timeout is None:
-            timeout = 5
+            timeout = 10
         return WebDriverWait(self.driver, timeout=timeout)
 
     def scroll_to(self, element):
@@ -55,7 +60,9 @@ class BasePage(object):
         search.send_keys(query)
         self.click(self.locators.GO_LOCATOR)
 
+    @allure.step('Clicking {locator}')
     def click(self, locator, timeout=None):
+        logger.info(f'Clicking {locator}')
         for i in range(CLICK_RETRY):
             try:
                 element = self.find(locator, timeout=timeout)
@@ -65,4 +72,4 @@ class BasePage(object):
                 return
             except StaleElementReferenceException:
                 if i == CLICK_RETRY - 1:
-                    raise
+                    raise TimeoutError

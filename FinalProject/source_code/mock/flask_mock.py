@@ -21,7 +21,7 @@ def get_user(username):
         vk_id = random.randint(0, 100)
         return jsonify({'vk_id': vk_id}), 200
     else:
-        return jsonify('ВСЕ ОК ПАПАША'), 404
+        return jsonify({}), 404
 
 
 
@@ -39,5 +39,4 @@ def shutdown():
 
 
 if __name__ == '__main__':
-    MOCK_DATA['user_name'] = 'Andrey'
     app.run(host='0.0.0.0', port=8083, debug=True)

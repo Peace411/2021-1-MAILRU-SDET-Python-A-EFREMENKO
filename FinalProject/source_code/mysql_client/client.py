@@ -46,3 +46,5 @@ class MySqlClient:
     def create_table_test_users(self):
         if not inspect(self.engine).has_table('test_users'):
             Base.metadata.tables['test_users'].create(self.engine)
+
+
