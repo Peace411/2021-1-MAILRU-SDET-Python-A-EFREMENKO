@@ -18,10 +18,10 @@ def mysql_client():
     my_sql_client.connection.close()
 
 
-
 def pytest_addoption(parser):
-    parser.addoption('--url', default=f'http://{socket.gethostbyname("app")}:8080')
+    parser.addoption('--url', default=f'http://my_app:8080/')
     parser.addoption('--browser', default='chrome')
+
 
 @pytest.fixture(scope='function')
 def test_dir(request):
@@ -29,6 +29,12 @@ def test_dir(request):
     test_dir = os.path.join(request.config.base_test_dir, test_name)
     os.makedirs(test_dir)
     return test_dir
+
+
+@pytest.fixture(scope='function')
+def client_api():
+    return ApiClient(f"http://my_app:8080")
+
 
 @pytest.fixture(scope='session')
 def config(request):
@@ -40,6 +46,8 @@ def config(request):
 @pytest.fixture(scope='session')
 def repo_root():
     return os.path.abspath(os.path.join(__file__, os.pardir))
+
+
 
 def pytest_configure(config):
     base_test_dir = '/tmp/tests'
@@ -54,10 +62,7 @@ def pytest_configure(config):
         my_sql_client = MySqlClient(user='test_qa', password='qa_test', db_name='TEST')
         my_sql_client.recreate_db()
         my_sql_client.connect()
-        # Создание таблиц
         my_sql_client.create_table_test_users()
-        user = MySQLBuilder(my_sql_client)
-        c =user.create_test_user()
         my_sql_client.connection.close()
 
     @pytest.fixture(scope='function', autouse=True)
@@ -84,3 +89,4 @@ def pytest_configure(config):
 
         with open(log_file, 'r') as f:
             allure.attach(f.read(), 'test.log', attachment_type=allure.attachment_type.TEXT)
+

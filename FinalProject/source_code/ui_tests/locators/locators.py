@@ -10,10 +10,10 @@ class BasePageLocators:
 
 class MainPageLocators(BasePageLocators):
     HOME_BUTTON = (By.XPATH, 'fsd')
-    EVENTS_BUTTON = (By.XPATH, "//a[contains(text(), '{}')]")
-    EVENTS_LINK_TEMPLATE = (By.XPATH, "//../div//a[contains(text(), '{}')]")
+    EVENTS_BUTTON = (By.XPATH, "//a[text() = '{}']")
+    EVENTS_LINK_TEMPLATE = (By.XPATH, "//../div//a[text() = '{}']")
     OVERLAY_LINK = (By.XPATH,"//a[@href = '{}']")
-    VK_ID = (By.XPATH,"//li[contains(text(), '{}' )]")
+    VK_ID = (By.XPATH,"//li[contains(text(), 'VK ID' )]")
 class LoginPageLocators(BasePageLocators):
     LOGIN_INPUT = (By.ID, 'username')
     PASSWORD_INPUT = (By.ID, 'password')

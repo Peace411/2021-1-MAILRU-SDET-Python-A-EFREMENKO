@@ -32,7 +32,7 @@ services:
         mysql_container:
           condition: service_healthy
 
-  app:  # Application
+  my_app:  # Application
     networks:
       my_net: null
     image: "myapp:latest"
@@ -50,13 +50,15 @@ services:
       my_net: null
     build: ./source_code/
     tty: true
+    environment:
+      - N=0
     volumes:
       - ./source_code:/tmp/source_code
       - /tmp/alluredir:/tmp/alluredir
     entrypoint: /bin/bash /tmp/source_code/start_tests.sh
     depends_on:
-      mysql_container:
-        condition: service_healthy
+      my_app:
+        condition: service_started
 
   selenoid:
     networks:

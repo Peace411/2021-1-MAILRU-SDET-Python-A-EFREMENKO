@@ -4,7 +4,7 @@ from ui_tests.pages.base_page import BasePage
 
 class LoginPage(BasePage):
     locators = LoginPageLocators()
-
+    url = 'http://my_app:8080/'
     def user_login(self, name, password):
         login_input = self.find(self.locators.LOGIN_INPUT)
         login_input.send_keys(name)

@@ -3,7 +3,7 @@ import socket
 import time
 
 import allure
-from selenium.common.exceptions import StaleElementReferenceException
+from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
 from selenium.webdriver import ActionChains
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
@@ -22,7 +22,7 @@ class PageNotLoadedException(Exception):
 
 
 class BasePage(object):
-    url = f'{socket.gethostbyname("app")}:8080'
+    url=None
     locators = BasePageLocators()
 
     def __init__(self, driver):
@@ -60,6 +60,7 @@ class BasePage(object):
         search.send_keys(query)
         self.click(self.locators.GO_LOCATOR)
 
+
     @allure.step('Clicking {locator}')
     def click(self, locator, timeout=None):
         logger.info(f'Clicking {locator}')
@@ -72,4 +73,4 @@ class BasePage(object):
                 return
             except StaleElementReferenceException:
                 if i == CLICK_RETRY - 1:
-                    raise TimeoutError
+                    raise TimeoutException

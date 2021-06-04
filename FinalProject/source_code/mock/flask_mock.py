@@ -6,7 +6,7 @@ from flask import Flask, jsonify, request
 app = Flask(__name__)
 
 MOCK_DATA = {}
-
+MOCK_DATA['user_name']= ''
 user_id_seq = 1
 
 
@@ -23,7 +23,11 @@ def get_user(username):
     else:
         return jsonify({}), 404
 
-
+@app.route('/vk_id/post/user', methods=['POST'])
+def post_user():
+    user_name = json.loads(request.data)['name']
+    MOCK_DATA['user_name'] = user_name
+    return jsonify({'name':user_name}),200
 
 
 def shutdown_mock():

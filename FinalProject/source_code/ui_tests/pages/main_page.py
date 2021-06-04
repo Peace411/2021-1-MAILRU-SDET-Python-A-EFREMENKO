@@ -1,10 +1,6 @@
 import logging
-import time
-
-# from mock.flask_mock import MOCK_DATA
 import allure
 import requests
-
 from ui_tests.locators.locators import MainPageLocators
 from ui_tests.pages.base_page import BasePage
 
@@ -25,6 +21,10 @@ class MainPage(BasePage):
                          self.locators.EVENTS_LINK_TEMPLATE[1].format(event))
         self.click(event_locator)
 
+    def go_to_navbar_href(self,name_button):
+        events_button = (self.locators.EVENTS_BUTTON[0],
+                         self.locators.EVENTS_BUTTON[1].format(name_button))
+        self.click(events_button)
 
     @allure.step('go to  overlay link {link}')
     def go_to_overlay_link(self, link):
@@ -36,10 +36,9 @@ class MainPage(BasePage):
         logger.info(f'{link}  is opening...')
         return self.driver.current_url
     def check_vk_id(self,name):
-        vk_id = requests.get(f'http://mock:8083/vk_id/{name}')
-        vk_id = vk_id.json()
-        vk_id_element = (self.locators.VK_ID[0],
-                        self.locators.VK_ID[1].format(vk_id))
-        vk_id_on_page =self.find(vk_id_element)
-        assert  vk_id_on_page == vk_id
+        json = {'name':name}
+        requests.post(f'http://mock:8083/vk_id/post/user',json=json)
+        self.driver.refresh()
+        vk_id_on_page =self.find(self.locators.VK_ID)
+        assert 'VK ID' in vk_id_on_page.text
 

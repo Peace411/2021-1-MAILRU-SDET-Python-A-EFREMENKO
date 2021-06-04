@@ -8,6 +8,8 @@ from selenium import webdriver
 from selenium.webdriver import ChromeOptions
 from webdriver_manager.chrome import ChromeDriverManager
 
+from api_client.client import ApiClient
+from mysql_client.builder import MySQLBuilder
 from ui_tests.pages.base_page import BasePage
 from ui_tests.pages.main_page import MainPage
 from ui_tests.pages.login_page import LoginPage
@@ -32,9 +34,20 @@ def main_page(driver):
 def login_page(driver):
     return LoginPage(driver=driver)
 
+
 @pytest.fixture
 def registration_page(driver):
     return RegistrationPage(driver=driver)
+
+
+@pytest.fixture(scope='function')
+def cookies(config, mysql_client):
+    mysql = MySQLBuilder(mysql_client)
+    test_user = mysql.create_test_user()
+    login_page = LoginPage(driver)
+    login_page.user_login(test_user.username,test_user.password)
+    cookies = driver.get_cookies()
+    return cookies
 
 
 @pytest.fixture(scope='session')
@@ -82,7 +95,7 @@ def driver(config, test_dir):
     browser.quit()
 
 
-@pytest.fixture(scope='function', autouse=True)
+@pytest.fixture(scope='function')
 def ui_report(driver, request, test_dir):
     failed_tests_count = request.session.testsfailed
     yield
