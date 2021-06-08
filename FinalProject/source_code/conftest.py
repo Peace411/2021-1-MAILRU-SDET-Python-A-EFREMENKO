@@ -4,7 +4,7 @@ import allure
 
 from mysql_client.builder import MySQLBuilder
 
-from ui_tests.fixtures import *
+from ui.fixtures import *
 import pytest
 
 from mysql_client.client import MySqlClient
@@ -50,7 +50,7 @@ def repo_root():
 
 
 def pytest_configure(config):
-    base_test_dir = '/tmp/tests'
+    base_test_dir = '/tmp/ui_tests'
     if not hasattr(config, 'workerinput'):  # execute only once on main worker
         if os.path.exists(base_test_dir):
             shutil.rmtree(base_test_dir)
@@ -77,7 +77,6 @@ def pytest_configure(config):
         file_handler.setLevel(log_level)
 
         log = logging.getLogger('test')
-        log.propagate = False
         log.setLevel(log_level)
         log.handlers.clear()
         log.addHandler(file_handler)
