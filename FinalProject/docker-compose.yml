@@ -1,0 +1,72 @@
+version: '2.1'
+networks:
+  my_net:
+    external:
+      name: my_net # This assumes network is already created
+services:
+  mysql_container:  # DataBase
+    networks:
+      my_net: null
+    image: "percona:latest"
+    environment:
+      MYSQL_ROOT_PASSWORD: pass
+    volumes:
+      - ./services_configs/mysql_config/mysql-init.sql:/data/application/mysql-init.sql
+    command: --init-file /data/application/mysql-init.sql
+    healthcheck:
+      test: [ 'CMD', 'mysqladmin', '-uroot', '-ppass', 'ping', '-h', '127.0.0.1' ]
+      timeout: 1s
+      retries: 30
+
+  mock:
+      networks:
+        my_net: null
+      image: "qa_mock:latest"
+      tty: true
+      volumes:
+        - ./source_code/mock:/tmp/source_code
+      entrypoint: /bin/bash /tmp/source_code/start_tests.sh
+      environment:
+        - TESTS_PATH=/tmp/source_code
+      depends_on:
+        mysql_container:
+          condition: service_healthy
+
+  my_app:  # Application
+    networks:
+      my_net: null
+    image: "myapp:latest"
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./services_configs/app/app_config:/tmp/app_config
+    entrypoint: /app/myapp --config=/tmp/app_config
+    depends_on:
+      mysql_container:
+        condition: service_healthy
+
+  tests: # Tests ORM SQL
+    networks:
+      my_net: null
+    build: ./source_code/
+    tty: true
+    environment:
+      - N=2
+    volumes:
+      - ./source_code:/tmp/source_code
+      - /tmp/alluredir:/tmp/alluredir
+    entrypoint: /bin/bash /tmp/source_code/start_tests.sh
+    depends_on:
+      my_app:
+        condition: service_started
+
+  selenoid:
+    networks:
+      my_net: null
+    image: aerokube/selenoid:latest
+    volumes:
+      - "./selenoid/config:/etc/selenoid"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    command: [ "-conf", "/etc/selenoid/browsers.json", "-container-network", "my_net"]
+    ports:
+      - "4444:4444"
