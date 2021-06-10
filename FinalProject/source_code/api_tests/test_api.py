@@ -18,20 +18,23 @@ class TestMyAppCaseApi(BaseCaseApi):
 
     def test_delete_user(self):
         new_database_user = self.mysql_builder.create_test_user()
-        self.client_api.get_delete_user(username=new_database_user.username)
+        resp =self.client_api.get_delete_user(username=new_database_user.username)
         assert self.mysql_client.check_exist_user(id=new_database_user.id) is False
+
 
     def test_block_user(self):  # Test block user
         new_database_user = self.mysql_builder.create_test_user()
+        self.client_api.post_login(new_database_user.username , new_database_user.password )
         self.client_api.get_block_user(username=new_database_user.username)
         changed_user = self.mysql_client.get_user(id=new_database_user.id)
         assert changed_user.access == 0
-
+        assert  changed_user.active == 0
     def test_unblock_user(self):
         new_database_user = self.mysql_builder.create_test_user(access=0)
         self.client_api.get_unblock_user(username=new_database_user.username)
         changed_user = self.mysql_client.get_user(id=new_database_user.id)
         assert changed_user.access == 1
+
 
     def test_status(self):
         self.client_api.get_status()
@@ -54,7 +57,7 @@ class TestMyAppCaseApi(BaseCaseApi):
                                                      expected_status=400
 
                                                      )
-        assert 'welcome' in response.headers['Location']
+        assert 'reg' in response.headers['Location']
 
     def test_logout(self):
         response = self.client_api.get_logout()
@@ -62,8 +65,8 @@ class TestMyAppCaseApi(BaseCaseApi):
         user = self.mysql_client.get_user(username=self.main_user.username)
         assert user.active == 0
 
-
-
+    def test_check_findjs(self):
+        self.client_api.get_find_me(expected_status=200)
 
     def test_negative_username_registration(self):
         user = self.api_user_builder.create_user(username='1234')

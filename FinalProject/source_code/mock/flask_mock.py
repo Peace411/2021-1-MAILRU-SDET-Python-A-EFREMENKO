@@ -17,8 +17,8 @@ def get_root():
 
 @app.route('/vk_id/<username>', methods=['GET'])
 def get_user(username):
-    if username in MOCK_DATA['user_name']:
-        vk_id = random.randint(0, 100)
+    if username in MOCK_DATA:
+        vk_id = MOCK_DATA[username]
         return jsonify({'vk_id': vk_id}), 200
     else:
         return jsonify({}), 404
@@ -26,7 +26,8 @@ def get_user(username):
 @app.route('/vk_id/post/user', methods=['POST'])
 def post_user():
     user_name = json.loads(request.data)['name']
-    MOCK_DATA['user_name'] = user_name
+    id = json.loads(request.data)['id']
+    MOCK_DATA[user_name] = id
     return jsonify({'name':user_name}),200
 
 

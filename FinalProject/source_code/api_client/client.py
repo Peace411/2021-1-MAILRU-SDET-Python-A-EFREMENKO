@@ -68,6 +68,9 @@ class ApiClient:
                                               f'Expected status_code: {expected_status}.')
         if jsonify:
             json_response = response.json()
+            if json_response.get('bStateError'):
+                error = json_response.get('bErrorMsg', 'Unknown')
+                raise ResponseErrorException(f'Request "{url}" return error "{error}"!')
             return json_response
         return response
 
@@ -108,6 +111,11 @@ class ApiClient:
                                jsonify=False)
         return result
 
+    def get_find_me(self, expected_status=200):
+        location = '/static/scripts/findMeError.js'
+        result = self._request('GET', location=location, headers=None, data=None,
+                               expected_status=expected_status)
+        return result
     def get_unblock_user(self, username, expected_status=200):
         location = f'/api/accept_user/{username}'
         result = self._request('GET', location=location, headers=None, json=None,

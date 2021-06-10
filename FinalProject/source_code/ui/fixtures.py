@@ -74,7 +74,8 @@ def get_user(mysql_client):
     test_user = mysql.create_test_user()
     username = test_user.username
     password = test_user.password
-    return username, password
+    email = test_user.email
+    return username, password,email
 
 
 

@@ -32,3 +32,5 @@ class RegistrationPageLocators(BasePageLocators):
     SDET_CHECK_BOX = (By.ID, 'term')
     SUBMIT_BUTTON = (By.ID, 'submit')
     ERROR_MESSAGE = (By.ID, 'flash')
+    CONTENT=(By.XPATH,"//*[@id = 'content']")
+    MAIN_CONTENT =(By.XPATH,'//*[@class ="uk-flex uk-flex-center"]')

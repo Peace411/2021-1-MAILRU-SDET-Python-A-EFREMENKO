@@ -61,7 +61,7 @@ class TestRegPage(BaseCase):
 
     @pytest.mark.parametrize(("email", "expected_message"), [(" ", "Incorrect email length"),
                                                              ("@gmail.com", "Invalid email address"),
-                                                             ("a" * 65, "Incorrect email length")])
+                                                             ("a" * 65, "Incorrect email length"),])
     def test_invalid_email_registration(self, email, expected_message):
         self.login_page.go_to_registation()
         self.registr_page.registration(name=fake.lexify(text='?????????'),
@@ -70,7 +70,24 @@ class TestRegPage(BaseCase):
         assert 'welcome' not in self.driver.current_url
         assert self.registr_page.get_error_message() == expected_message
 
+    def test_invalid_length_data(self):
+        self.login_page.go_to_registation()
+        self.registr_page.registration(name=fake.lexify(text='?'),
+                                       email=fake.lexify(text=''),
+                                       password=fake.password())
+        assert 'welcome' not in self.driver.current_url
+        assert self.registr_page.get_error_message() == 'Incorrect email length and Incorrect name length'
+    def test_send_same_email(self,get_user):
+        self.login_page.go_to_registation()
+        self.registr_page.registration(name=fake.lexify(text='?????????'),
+                                       email=get_user[2],
+                                       password=fake.password())
+        assert self.registr_page.get_error_message() == 'this user is already registered'
 
+
+    def test_find_malevich_square(self):
+        self.login_page.go_to_registation()
+        self.registr_page.find_malevich_square()
 @pytest.mark.ui
 class TestMainPage(BaseCase):
 
@@ -118,7 +135,14 @@ class TestMainPage(BaseCase):
         assert url == link
 
     def test_vk_id(self):
-        self.main_page.check_vk_id(self.username)
+
+        print(self.username, self.password)
+        self.main_page.check_vk_id(self.username, id="100")
+
+    def test_invalid_vk_id(self):
+
+        print(self.username, self.password)
+        self.main_page.check_vk_id(self.username, id='1' * 360)
 
     def go_to_navbar_href(self, name_button, expected_url):
         self.main_page.go_to_navbar_href(name_button)
@@ -138,7 +162,9 @@ class TestMainPage(BaseCase):
         self.main_page.driver.refresh()
         random_text_second = self.main_page.get_random_text_in_footer()
         assert random_text_first != random_text_second
-
+    def test_small_size_window(self):
+        self.driver.set_window_size(760, 900)
+        self.main_page.click_logout()
     def test_logout(self):
         self.main_page.click_logout()
         assert 'welcome' not in self.driver.current_url

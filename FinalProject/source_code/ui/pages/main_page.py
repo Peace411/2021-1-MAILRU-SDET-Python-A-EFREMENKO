@@ -38,12 +38,14 @@ class MainPage(BasePage):
         return self.driver.current_url
 
     @allure.step('add user in mock and check vk id  on page')
-    def check_vk_id(self,name):
-        json = {'name':name}
+    def check_vk_id(self,name,id):
+        json = {'name':name,'id':id}
         requests.post(f'http://mock:8083/vk_id/post/user',json=json)
         self.driver.refresh()
         vk_id_on_page =self.find(self.locators.VK_ID)
-        assert 'VK ID' in vk_id_on_page.text,'there is no such id'
+        assert id in vk_id_on_page.text,'there is no such id'
+        self.click(self.locators.LOGOUT_BUTTON)
+        assert 'login' in self.driver.current_url ,'the layout has moved out'
 
     def click_logout(self):
         self.click(self.locators.LOGOUT_BUTTON)
